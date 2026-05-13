@@ -28,11 +28,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to Cloudflare Pages
-        uses: nicolalu/cf-pages-deploy-action@v1.1.1
-        with:
-          cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          repo_name: ${{ github.event.repository.name }}
-          repo_owner: ${{ github.repository_owner }}
-          branch_name: ${{ github.ref_name }}
-          build_output_path: dist
+        run: npx wrangler pages deploy dist --project-name=notekeeper
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
