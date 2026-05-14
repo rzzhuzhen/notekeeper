@@ -774,16 +774,40 @@ export default function App() {
               ))}
             </div>
 
-            <textarea
-              placeholder="写下你的想法... (支持 Markdown)"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="textarea textarea-bordered w-full h-80 font-mono text-sm"
-            />
+            {/* 标签选择 */}
+            <div className="flex flex-wrap gap-2">
+              {tags.map(tag => (
+                <button
+                  key={tag.id}
+                  type="button"
+                  onClick={() => toggleTagForNote(tag.id)}
+                  className={`badge cursor-pointer transition-all ${
+                    selectedNoteTags.includes(tag.id) ? 'ring-2 ring-offset-1' : ''
+                  }`}
+                  style={{ backgroundColor: tag.color + '30', color: tag.color, borderColor: tag.color }}
+                >
+                  {tag.name}
+                </button>
+              ))}
+            </div>
 
-            {/* Markdown 预览提示 */}
-            <div className="text-xs text-base-content/50">
-              支持 Markdown 语法：**粗体**、*斜体*、`代码`、[链接](url)、- 列表 等
+            {/* Markdown 编辑器 - 双栏 */}
+            <div className="flex gap-4 h-96">
+              <div className="flex-1">
+                <label className="label"><span className="label-text">编辑</span></label>
+                <textarea
+                  placeholder="写下你的想法... (支持 Markdown)"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  className="textarea textarea-bordered w-full h-full font-mono text-sm"
+                />
+              </div>
+              <div className="flex-1 border border-base-300 rounded-lg p-4 overflow-y-auto bg-base-100">
+                <label className="label"><span className="label-text">预览</span></label>
+                <div className="prose prose-sm max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || '*无内容*'}</ReactMarkdown>
+                </div>
+              </div>
             </div>
 
             <button type="submit" className="btn btn-primary">
@@ -839,15 +863,23 @@ export default function App() {
               ))}
             </div>
 
-            <textarea
-              placeholder="写下你的想法... (支持 Markdown)"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="textarea textarea-bordered w-full h-80 font-mono text-sm"
-            />
-
-            <div className="text-xs text-base-content/50">
-              支持 Markdown 语法
+            {/* Markdown 编辑器 - 双栏 */}
+            <div className="flex gap-4 h-96">
+              <div className="flex-1">
+                <label className="label"><span className="label-text">编辑</span></label>
+                <textarea
+                  placeholder="写下你的想法... (支持 Markdown)"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  className="textarea textarea-bordered w-full h-full font-mono text-sm"
+                />
+              </div>
+              <div className="flex-1 border border-base-300 rounded-lg p-4 overflow-y-auto bg-base-100">
+                <label className="label"><span className="label-text">预览</span></label>
+                <div className="prose prose-sm max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || '*无内容*'}</ReactMarkdown>
+                </div>
+              </div>
             </div>
 
             <button type="submit" className="btn btn-primary">
