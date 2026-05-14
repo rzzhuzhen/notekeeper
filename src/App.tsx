@@ -282,6 +282,17 @@ export default function App() {
     }
   }
 
+  async function moveNoteToNotebook(noteId: string, notebookId: string | null) {
+    const { error } = await supabase
+      .from('notes')
+      .update({ notebook_id: notebookId, updated_at: new Date().toISOString() })
+      .eq('id', noteId)
+
+    if (!error) {
+      fetchNotes()
+    }
+  }
+
   async function handleCreateNote(e: React.FormEvent) {
     e.preventDefault()
     if (!title.trim()) return
@@ -432,6 +443,19 @@ export default function App() {
       </div>
     ))
   }, [selectedNotebookId])
+
+  function renderNotebookMoveOptions(nodes: Notebook[], noteId: string, depth: number): React.ReactNode {
+    return nodes.map(node => (
+      <li key={node.id}>
+        <a onClick={() => moveNoteToNotebook(noteId, node.id)}>
+          {'  '.repeat(depth)}{depth > 0 ? '└ ' : ''}{node.name}
+        </a>
+        {node.children && node.children.length > 0 && (
+          <ul>{renderNotebookMoveOptions(node.children, noteId, depth + 1)}</ul>
+        )}
+      </li>
+    ))
+  }
 
   let filteredNotes = notes
   if (selectedNotebookId) {
@@ -699,6 +723,13 @@ export default function App() {
                           })}
                         </span>
                         <div className="flex gap-2">
+                          <div className="dropdown dropdown-end">
+                            <label tabIndex={0} className="btn btn-ghost btn-sm">移动 ▼</label>
+                            <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                              <li><a onClick={() => moveNoteToNotebook(note.id, null)}>移至全部笔记</a></li>
+                              {renderNotebookMoveOptions(notebooks, note.id, 0)}
+                            </ul>
+                          </div>
                           <button
                             onClick={() => startPreview(note)}
                             className="btn btn-ghost btn-sm"
